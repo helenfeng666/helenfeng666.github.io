@@ -1,0 +1,474 @@
+/* =========================================================
+   OSEANA — REALM 2: THE CELLAR (autoplay theme + no overlaps)
+   ========================================================= */
+:root {
+    --ink: #f4e8c8;
+    --ink-dim: rgba(244, 232, 200, .86);
+    --line: rgba(255, 255, 255, .16);
+    --glass: rgba(8, 8, 10, .46);
+    --gold: #e6c879;
+    --gold-dim: rgba(230, 200, 121, .55);
+    --bg: url('https://static.wixstatic.com/media/bdbe03_4cb2c2d8ac1143e38bf8357a50f8a818~mv2.png');
+
+    /* Audio */
+    --src-theme: 'https://static.wixstatic.com/mp3/bdbe03_cb467303cb9d4b0e9d7c487ae43f3c57.m4a';
+    --src-wanting: 'https://static.wixstatic.com/mp3/bdbe03_bcc80f4e530745859e73be5106c83d24.m4a';
+    --src-naked: 'https://static.wixstatic.com/mp3/bdbe03_a0850d0204f749e5a802b8396f27ff82.m4a';
+    --src-sayyes: 'https://static.wixstatic.com/mp3/bdbe03_71541c83da7e4114896ef78dffffb92c.m4a';
+    --src-answer: 'https://static.wixstatic.com/mp3/bdbe03_41e4795018464642b6133b6bffebd469.m4a';
+}
+
+/* Base */
+html,
+body {
+    margin: 0;
+    height: 100%;
+    background: #050507;
+    color: var(--ink);
+    font-family: ui-sans-serif, system-ui, Segoe UI, Roboto, Helvetica, Arial
+}
+
+* {
+    box-sizing: border-box
+}
+
+button {
+    touch-action: manipulation;
+    border: 0;
+    background: none;
+    color: inherit
+}
+
+/* Scene */
+#scene {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    isolation: isolate;
+    background: #040406
+}
+
+#bg {
+    position: absolute;
+    inset: 0;
+    background-image: var(--bg);
+    background-size: cover;
+    background-position: center 55%;
+    filter: brightness(.84) contrast(1.06) saturate(.98);
+    transition: transform .3s ease;
+    z-index: 0
+}
+
+.vignette:after {
+    content: "";
+    position: absolute;
+    inset: -10%;
+    background: radial-gradient(130% 120% at 28% 62%, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, .22) 50%, rgba(0, 0, 0, .62) 86%, rgba(0, 0, 0, .84) 100%);
+    pointer-events: none;
+    z-index: 0
+}
+
+/* Moon halo */
+#moon {
+    position: absolute;
+    left: 28%;
+    bottom: 22%;
+    width: min(30vw, 500px);
+    aspect-ratio: 1;
+    border-radius: 999px;
+    z-index: 1;
+    pointer-events: none;
+    background: radial-gradient(closest-side, rgba(235, 238, 255, .18), rgba(230, 236, 255, .08) 55%, rgba(230, 236, 255, 0) 70%);
+    mix-blend-mode: screen;
+    filter: blur(2px);
+    opacity: .44
+}
+
+/* Memory dust */
+#dust {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1
+}
+
+.spark {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(240, 220, 160, 1), rgba(240, 220, 160, .18) 70%, transparent 100%);
+    filter: drop-shadow(0 0 6px rgba(240, 220, 160, .9));
+    opacity: .9
+}
+
+/* =================== AUDIO SIGILS (eyes) ================= */
+#ports {
+    position: absolute;
+    inset: 0;
+    z-index: 4
+}
+
+.sigil {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    width: 94px;
+    height: 60px;
+    cursor: pointer;
+    outline: none
+}
+
+.sigil[aria-disabled="true"] {
+    opacity: .35;
+    pointer-events: none;
+    filter: grayscale(.35)
+}
+
+.eye {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    --b: 1.6px
+}
+
+.eye .lid,
+.eye .iris {
+    position: absolute;
+    inset: 0;
+    border-radius: 62%/72%;
+    border: var(--b) solid var(--gold-dim);
+    box-shadow: inset 0 0 18px rgba(230, 200, 121, .06)
+}
+
+.eye .iris {
+    inset: 12% 6%;
+    border-color: rgba(255, 255, 255, .14)
+}
+
+.eye .pupil {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--gold);
+    box-shadow: 0 0 14px rgba(230, 200, 121, .8), 0 0 42px rgba(230, 200, 121, .35)
+}
+
+.eye .blink {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 0;
+    border-radius: 62%/72%;
+    background: linear-gradient(to bottom, rgba(10, 10, 14, .9), rgba(10, 10, 14, .7));
+    transition: height .18s ease
+}
+
+.eye .ticks {
+    position: absolute;
+    inset: -6px;
+    border-radius: 62%/72%;
+    background: conic-gradient(from 0deg, transparent 0deg 12deg, rgba(230, 200, 121, .14) 12deg 13deg) 0/100% 100%;
+    -webkit-mask: radial-gradient(closest-side, transparent calc(100% - 6px), #000 0);
+    mask: radial-gradient(closest-side, transparent calc(100% - 6px), #000 0);
+    animation: spin 38s linear infinite;
+    pointer-events: none
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg)
+    }
+}
+
+.eye:after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 62%/72%;
+    background: linear-gradient(115deg, transparent 0 40%, rgba(255, 255, 255, .06) 48%, transparent 58% 100%);
+    filter: blur(1px);
+    mix-blend-mode: screen;
+    animation: sweep 4.2s ease-in-out infinite
+}
+
+@keyframes sweep {
+
+    0%,
+    100% {
+        transform: translateX(-6%)
+    }
+
+    50% {
+        transform: translateX(6%)
+    }
+}
+
+.sigil:hover .lid {
+    border-color: var(--gold)
+}
+
+.sigil:hover .pupil {
+    transform: translate(-50%, -50%) scale(1.12)
+}
+
+.sigil.blinking .blink {
+    height: 100%
+}
+
+.tag {
+    position: absolute;
+    left: 50%;
+    top: 100%;
+    transform: translate(-50%, 8px);
+    font-size: 12px;
+    letter-spacing: .02em;
+    color: var(--ink-dim);
+    background: rgba(8, 8, 10, .46);
+    padding: 3px 8px;
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    opacity: 0;
+    transition: opacity .25s, transform .25s;
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    white-space: nowrap
+}
+
+.sigil:hover .tag,
+.sigil:focus-visible .tag {
+    opacity: 1;
+    transform: translate(-50%, 4px)
+}
+
+/* ================== CAPTION RAIL ================== */
+#caption-rail {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 2.6vh;
+    z-index: 5;
+    pointer-events: none;
+    display: flex;
+    justify-content: center;
+    padding: 0 6vw
+}
+
+.caption {
+    font-size: clamp(14px, 2.2vw, 20px);
+    letter-spacing: .02em;
+    line-height: 1.45;
+    color: var(--ink);
+    max-width: min(1200px, 88vw);
+    min-height: 42px;
+    padding: 8px 14px 9px;
+    border: 1px solid rgba(255, 255, 255, .14);
+    border-radius: 14px;
+    background: linear-gradient(180deg, rgba(6, 6, 10, .65), rgba(6, 6, 10, .34));
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    box-shadow: 0 18px 54px rgba(0, 0, 0, .38), inset 0 0 0 1px rgba(255, 255, 255, .06);
+    position: relative;
+    overflow: hidden;
+    text-align: center
+}
+
+.caption:before {
+    content: "";
+    position: absolute;
+    left: 10px;
+    right: 10px;
+    top: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .18), transparent)
+}
+
+.caption .glint {
+    position: absolute;
+    top: 50%;
+    width: 90px;
+    height: 2px;
+    transform: translateY(-50%);
+    background: linear-gradient(90deg, transparent, rgba(230, 200, 121, .9), transparent);
+    animation: glint 5.2s linear infinite;
+    opacity: .35
+}
+
+@keyframes glint {
+    0% {
+        left: -10%
+    }
+
+    100% {
+        left: 110%
+    }
+}
+
+.caption .text {
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity .45s, transform .45s
+}
+
+/* ================= DRAWER (lyrics) ================= */
+#drawer {
+    position: absolute;
+    right: 2.6vw;
+    bottom: 2.6vh;
+    z-index: 6;
+    width: min(520px, 92vw);
+    max-height: min(60vh, 520px);
+    background: var(--glass);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    color: var(--ink);
+    overflow: auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, .35);
+    padding: 12px 14px;
+    display: none
+}
+
+#drawer.on {
+    display: block;
+    animation: rise .35s ease both
+}
+
+@keyframes rise {
+    from {
+        opacity: 0;
+        transform: translateY(8px)
+    }
+
+    to {
+        opacity: 1;
+        transform: none
+    }
+}
+
+#drawer .top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px
+}
+
+#drawer h3 {
+    margin: 0;
+    font-size: 15px;
+    letter-spacing: .02em
+}
+
+#drawer .close {
+    cursor: pointer;
+    border: 1px solid var(--line);
+    background: rgba(255, 255, 255, .06);
+    border-radius: 10px;
+    padding: 6px 10px
+}
+
+#drawer pre {
+    white-space: pre-wrap;
+    margin: 8px 0 0;
+    line-height: 1.6;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace
+}
+
+#drawer .meta {
+    opacity: .76;
+    font-size: 12px
+}
+
+/* HUD + intro */
+#hud {
+    position: absolute;
+    left: 12px;
+    bottom: 12px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    z-index: 7
+}
+
+button.icon {
+    cursor: pointer;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    padding: 8px 10px;
+    background: var(--glass);
+    color: var(--ink)
+}
+
+button.icon:hover {
+    background: rgba(255, 255, 255, .08)
+}
+
+#toast {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 6px 10px;
+    font-size: 12px;
+    background: var(--glass);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    display: none;
+    z-index: 8
+}
+
+#enter {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9;
+    background: rgba(0, 0, 0, .48);
+    backdrop-filter: blur(2px)
+}
+
+#enter .card {
+    max-width: 980px;
+    margin: 6vw 4vw;
+    padding: 28px;
+    border-radius: 20px;
+    text-align: center;
+    background: rgba(0, 0, 0, .32);
+    border: 1.5px solid var(--line);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, .35);
+    color: var(--ink)
+}
+
+#enter .btn {
+    padding: 10px 18px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, .35);
+    background: rgba(255, 255, 255, .08);
+    color: var(--ink);
+    font-size: 14px;
+    cursor: pointer
+}
+
+/* Mobile */
+@media (max-width:820px) {
+    .sigil {
+        width: 82px;
+        height: 50px
+    }
+
+    #drawer {
+        right: 4vw;
+        left: 4vw;
+        width: auto
+    }
+
+    .caption {
+        font-size: clamp(14px, 3.6vw, 18px)
+    }
+}

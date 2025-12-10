@@ -4,14 +4,16 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>OSEANA • Realm 3: The Room (Story Edition)</title>
+    <title>OSEANA • Realm 3: The Room (Nervous System Mirror)</title>
     <meta name="theme-color" content="#070707" />
     <link rel="stylesheet" href="css/room.css" />
 </head>
 
 <body>
     <div id="scene" class="vignette" aria-label="OSEANA: Realm 3 — The Room">
+        <!-- Background + frozen noise + aura -->
         <div class="bg" id="bg" aria-hidden="true"></div>
+        <div id="noiseLayer" aria-hidden="true"></div>
         <div id="doorAura" aria-hidden="true"></div>
         <div id="dust" aria-hidden="true"></div>
 
@@ -24,6 +26,14 @@
 
         <!-- Orbs for songs -->
         <div id="ports" aria-live="polite"></div>
+
+        <!-- Nervous-system breathing visual -->
+        <div id="breathLayer" aria-hidden="true">
+            <div id="breathOrb">
+                <div class="halo"></div>
+                <div class="core"></div>
+            </div>
+        </div>
 
         <!-- Caption rail for story lines -->
         <div id="captionRail">
@@ -43,26 +53,44 @@
             <div class="body" id="pBody"></div>
         </section>
 
-        <!-- HUD -->
+        <!-- HUD: audio + nervous-system mirror controls -->
         <div id="hud">
             <button id="mute" class="icon" aria-pressed="false" title="Mute / Unmute">🔊</button>
+            <button id="listen" class="icon" aria-pressed="false"
+                title="Let the Room listen to your breath (optional)">🫁</button>
             <button id="recenter" class="icon" title="Recenter">🎯</button>
+        </div>
+
+        <!-- Nervous-system state HUD -->
+        <div id="nervousHud" aria-live="polite">
+            <div class="label">ROOM MIRROR</div>
+            <div class="meter">
+                <div class="bar">
+                    <span id="nervousFill"></span>
+                </div>
+                <div class="word" id="nervousWord">waiting to listen</div>
+            </div>
         </div>
 
         <!-- Intro overlay -->
         <div id="enter" aria-hidden="false">
             <div class="card">
                 <h1>OSEANA: THE ROOM</h1>
-                <p class="sub">A survivor in a doorless room. He erased the exit; she draws her own. We arrive at the
-                    moment the chalk meets the wall and the dark begins to listen.</p>
+                <p class="sub">
+                    A survivor in a doorless room. He erased the exit; she draws her own.
+                    Tonight, the wall listens back. Your breath becomes a soft metronome:
+                    the Room mirrors your nervous system in light and sound.
+                </p>
                 <button id="enterBtn" class="btn" aria-label="Enter the Room">Enter as OSEANA</button>
-                <p class="meta">Sound begins after you tap • Headphones recommended • Hover a light to listen; click to
-                    open the story.</p>
+                <p class="meta">
+                    Sound begins after you tap • Headphones recommended • The mic is optional and stays in your
+                    browser • Hover a light to listen; click to open the story.
+                </p>
             </div>
         </div>
 
         <!-- Toast feedback -->
-        <div id="toast">listening…</div>
+        <div id="toast" role="status" aria-live="polite">listening…</div>
     </div>
 
     <script src="js/room.js"></script>
