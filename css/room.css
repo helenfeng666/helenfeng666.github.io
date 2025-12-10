@@ -1,0 +1,437 @@
+/* =========================================================
+   OSEANA — REALM 3: THE ROOM (story-rich edition)
+   ========================================================= */
+:root {
+    --ink: #f6e9c7;
+    --ink-dim: rgba(246, 233, 199, .86);
+    --line: rgba(255, 255, 255, .18);
+    --glass: rgba(8, 8, 8, .46);
+    --glow: rgba(255, 214, 120, .95);
+    --bg: url('https://static.wixstatic.com/media/bdbe03_9980e12b99704a5fb18b40e912e8dcd6~mv2.png');
+    --src-theme: 'https://static.wixstatic.com/mp3/bdbe03_eef4d831999343c6ac40746492caf4c6.mp3';
+    --src-room: 'https://static.wixstatic.com/mp3/bdbe03_0f86cf9a3dfd45d1b96842b24dffe3bf.m4a';
+    --src-hunger: 'https://static.wixstatic.com/mp3/bdbe03_d288354750074d039cd55f476f6575d8.m4a';
+    --src-light: 'https://static.wixstatic.com/mp3/bdbe03_ff17a9cee3a44d6ab4aea9c0b0575d1a.m4a';
+    --src-glisten: 'https://static.wixstatic.com/mp3/bdbe03_4b374af809a24b0f91c01f264f70a614.m4a';
+    --src-ophelia: 'https://static.wixstatic.com/mp3/bdbe03_3f99fba3bb74406f8129994fe8d86dc6.m4a';
+    --src-circles: 'https://static.wixstatic.com/mp3/bdbe03_2205d7517c3543c6affb208f903fa948.m4a';
+}
+
+html,
+body {
+    margin: 0;
+    height: 100%;
+    background: #070707;
+    color: var(--ink);
+    font-family: ui-sans-serif, system-ui, Segoe UI, Roboto, Helvetica, Arial
+}
+
+* {
+    box-sizing: border-box
+}
+
+body {
+    overflow: hidden
+}
+
+#scene {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #050505;
+    isolation: isolate
+}
+
+.bg {
+    position: absolute;
+    inset: 0;
+    background-image: var(--bg);
+    background-size: cover;
+    background-position: center right 44%;
+    filter: brightness(.86) contrast(1.03) saturate(1.02);
+    will-change: transform, filter;
+    transition: filter .9s ease, transform .3s ease;
+}
+
+.vignette:after {
+    content: "";
+    position: absolute;
+    inset: -10%;
+    background: radial-gradient(130% 120% at 83% 60%, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, .22) 55%, rgba(0, 0, 0, .62) 86%, rgba(0, 0, 0, .82) 100%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Door aura */
+#doorAura {
+    position: absolute;
+    right: 10.2%;
+    bottom: 16%;
+    pointer-events: none;
+    z-index: 1;
+    width: min(18vw, 300px);
+    height: min(62vh, 680px);
+    background:
+        radial-gradient(60% 18% at 50% 100%, rgba(255, 210, 120, .28), rgba(255, 210, 120, 0) 70%),
+        radial-gradient(50% 12% at 8% 90%, rgba(255, 210, 120, .16), rgba(255, 210, 120, 0) 60%);
+    mix-blend-mode: screen;
+    opacity: .52;
+    animation: doorPulse 5.2s ease-in-out infinite;
+}
+
+@keyframes doorPulse {
+
+    0%,
+    100% {
+        opacity: .42;
+        filter: blur(0)
+    }
+
+    50% {
+        opacity: .78;
+        filter: blur(1.2px)
+    }
+}
+
+/* Gold dust */
+#dust {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 2
+}
+
+.spark {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 220, 150, 1), rgba(255, 220, 150, .18) 70%, transparent 100%);
+    filter: drop-shadow(0 0 6px rgba(255, 220, 150, .9));
+    opacity: .9
+}
+
+/* Orbs */
+.orb {
+    position: absolute;
+    width: 32px;
+    height: 32px;
+    border-radius: 999px;
+    cursor: pointer;
+    z-index: 3;
+    outline: none;
+    border: 1px solid rgba(255, 255, 255, .32);
+    background: radial-gradient(closest-side, rgba(255, 225, 140, .95), rgba(255, 200, 80, .52) 62%, rgba(255, 200, 80, 0));
+    box-shadow: 0 0 16px var(--glow), 0 0 48px rgba(255, 210, 90, .38);
+    transform: translate(-50%, -50%) scale(1);
+    transition: transform .18s ease, filter .2s ease, border-color .25s ease, opacity .25s ease;
+}
+
+.orb:hover,
+.orb:focus-visible {
+    transform: translate(-50%, -50%) scale(1.2);
+    filter: saturate(1.18) brightness(1.06);
+    border-color: rgba(255, 255, 255, .82);
+    box-shadow: 0 0 24px rgba(255, 255, 210, .95), 0 0 70px rgba(255, 220, 120, .55)
+}
+
+.orb.disabled {
+    opacity: .35;
+    cursor: not-allowed;
+    filter: grayscale(.3);
+    box-shadow: none
+}
+
+/* Trace door */
+#traceWrap {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 3
+}
+
+#traceDoor {
+    position: absolute;
+    right: 9.8%;
+    bottom: 14%;
+    width: min(20vw, 330px);
+    height: min(68vh, 720px)
+}
+
+#traceDoor path {
+    fill: none;
+    stroke: rgba(255, 215, 140, .95);
+    stroke-width: 6;
+    stroke-linecap: round;
+    filter: drop-shadow(0 0 16px rgba(255, 205, 120, .9));
+    stroke-dasharray: 1600;
+    stroke-dashoffset: 1600;
+}
+
+.tracing #traceDoor path {
+    animation: drawDoor 3.6s ease forwards
+}
+
+@keyframes drawDoor {
+    to {
+        stroke-dashoffset: 0
+    }
+}
+
+/* Completed door state */
+.door-open .bg {
+    filter: brightness(.94) contrast(1.06) saturate(1.04)
+}
+
+.door-open #doorAura {
+    opacity: .92;
+    filter: blur(1.4px)
+}
+
+/* Caption rail (only story captions remain) */
+#captionRail {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 3vh;
+    z-index: 5;
+    pointer-events: none;
+    display: flex;
+    justify-content: center;
+    padding: 0 6vw;
+    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 6px);
+}
+
+#captionRail .caption {
+    font-size: clamp(14px, 2.2vw, 19px);
+    letter-spacing: .02em;
+    line-height: 1.45;
+    color: var(--ink);
+    max-width: min(1200px, 90vw);
+    min-height: 40px;
+    padding: 6px 14px 8px;
+    border: 1px solid rgba(255, 255, 255, .14);
+    border-radius: 14px;
+    background: linear-gradient(180deg, rgba(8, 8, 8, .65), rgba(8, 8, 8, .34));
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    box-shadow: 0 16px 50px rgba(0, 0, 0, .38), inset 0 0 0 1px rgba(255, 255, 255, .06);
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+}
+
+#captionRail .caption:before {
+    content: "";
+    position: absolute;
+    left: 10px;
+    right: 10px;
+    top: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .18), transparent);
+}
+
+#captionRail .caption .glint {
+    position: absolute;
+    top: 50%;
+    width: 90px;
+    height: 2px;
+    transform: translateY(-50%);
+    background: linear-gradient(90deg, transparent, rgba(230, 200, 121, .9), transparent);
+    animation: glint 5.2s linear infinite;
+    opacity: .35;
+}
+
+@keyframes glint {
+    0% {
+        left: -10%
+    }
+
+    100% {
+        left: 110%
+    }
+}
+
+#captionRail .caption .text {
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity .45s ease, transform .45s ease
+}
+
+/* Intro */
+#enter {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 6;
+    background: rgba(0, 0, 0, .48);
+    backdrop-filter: blur(2px)
+}
+
+#enter .card {
+    max-width: 920px;
+    margin: 6vw 4vw;
+    padding: 28px;
+    border-radius: 20px;
+    text-align: center;
+    background: rgba(0, 0, 0, .32);
+    border: 1.5px solid var(--line);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, .35)
+}
+
+#enter h1 {
+    margin: 0 0 8px;
+    font-size: 28px;
+    letter-spacing: .02em
+}
+
+#enter .sub {
+    opacity: .95;
+    font-size: 15px;
+    margin-bottom: 16px
+}
+
+#enter .btn {
+    padding: 10px 18px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, .35);
+    background: rgba(255, 255, 255, .08);
+    color: var(--ink);
+    font-size: 14px;
+    cursor: pointer
+}
+
+#enter .meta {
+    color: var(--ink-dim);
+    font-size: 12.5px;
+    margin-top: 10px
+}
+
+/* Panel */
+#overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, .45);
+    backdrop-filter: blur(2px);
+    display: none;
+    z-index: 5
+}
+
+#panel {
+    position: absolute;
+    left: 50%;
+    bottom: -4%;
+    transform: translate(-50%, 120%);
+    transition: transform .45s cubic-bezier(.2, .8, .2, 1);
+    width: min(960px, 94vw);
+    max-height: min(74vh, 640px);
+    background: var(--glass);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    color: var(--ink);
+    z-index: 6;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+#panel.on {
+    transform: translate(-50%, 0)
+}
+
+#panel .top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--line)
+}
+
+#panel .title {
+    font-weight: 700
+}
+
+#panel .x {
+    cursor: pointer;
+    border: 1px solid var(--line);
+    background: rgba(255, 255, 255, .06);
+    border-radius: 10px;
+    padding: 6px 10px
+}
+
+#panel .body {
+    padding: 14px 16px;
+    line-height: 1.7;
+    overflow: auto
+}
+
+#panel blockquote {
+    margin: 8px 0 12px;
+    padding: 6px 10px;
+    border-left: 2px solid #ffe2a6;
+    background: rgba(255, 255, 255, .05)
+}
+
+#panel details {
+    margin: 12px 0;
+    border: 1px dashed rgba(255, 255, 255, .18);
+    border-radius: 12px;
+    padding: 8px 10px
+}
+
+#panel summary {
+    cursor: pointer;
+    opacity: .92
+}
+
+#panel pre {
+    white-space: pre-wrap;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    line-height: 1.55
+}
+
+/* HUD */
+#hud {
+    position: absolute;
+    left: 12px;
+    bottom: 12px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    z-index: 4
+}
+
+button.icon {
+    cursor: pointer;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    padding: 8px 10px;
+    background: var(--glass);
+    color: var(--ink)
+}
+
+button.icon:hover {
+    background: rgba(255, 255, 255, .08)
+}
+
+#toast {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 6px 10px;
+    font-size: 12px;
+    background: var(--glass);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    display: none;
+    z-index: 7
+}
+
+@media (max-width:768px) {
+    #panel {
+        max-height: 66vh
+    }
+}

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>OSEANA • Realm 3: The Room (Story Edition)</title>
+    <meta name="theme-color" content="#070707" />
+    <link rel="stylesheet" href="css/room.css" />
+</head>
+
+<body>
+    <div id="scene" class="vignette" aria-label="OSEANA: Realm 3 — The Room">
+        <div class="bg" id="bg" aria-hidden="true"></div>
+        <div id="doorAura" aria-hidden="true"></div>
+        <div id="dust" aria-hidden="true"></div>
+
+        <!-- Golden trace for the erased door -->
+        <div id="traceWrap" aria-hidden="true">
+            <svg id="traceDoor" viewBox="0 0 300 900" role="img" aria-label="A hand traces a golden doorway">
+                <path d="M290,880 L290,180 Q290,80 190,80 L70,80" />
+            </svg>
+        </div>
+
+        <!-- Orbs for songs -->
+        <div id="ports" aria-live="polite"></div>
+
+        <!-- Caption rail for story lines -->
+        <div id="captionRail">
+            <div class="caption">
+                <div class="glint"></div>
+                <div class="text" id="capText"></div>
+            </div>
+        </div>
+
+        <!-- Panel for song details -->
+        <div id="overlay" aria-hidden="true"></div>
+        <section id="panel" aria-hidden="true" aria-modal="true" role="dialog">
+            <div class="top">
+                <div class="title" id="pTitle"></div>
+                <button class="x" id="pClose" aria-label="Close">✕</button>
+            </div>
+            <div class="body" id="pBody"></div>
+        </section>
+
+        <!-- HUD -->
+        <div id="hud">
+            <button id="mute" class="icon" aria-pressed="false" title="Mute / Unmute">🔊</button>
+            <button id="recenter" class="icon" title="Recenter">🎯</button>
+        </div>
+
+        <!-- Intro overlay -->
+        <div id="enter" aria-hidden="false">
+            <div class="card">
+                <h1>OSEANA: THE ROOM</h1>
+                <p class="sub">A survivor in a doorless room. He erased the exit; she draws her own. We arrive at the
+                    moment the chalk meets the wall and the dark begins to listen.</p>
+                <button id="enterBtn" class="btn" aria-label="Enter the Room">Enter as OSEANA</button>
+                <p class="meta">Sound begins after you tap • Headphones recommended • Hover a light to listen; click to
+                    open the story.</p>
+            </div>
+        </div>
+
+        <!-- Toast feedback -->
+        <div id="toast">listening…</div>
+    </div>
+
+    <script src="js/room.js"></script>
+</body>
+
+</html>
