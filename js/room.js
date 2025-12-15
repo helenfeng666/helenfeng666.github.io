@@ -375,7 +375,10 @@ so dance with me in circles on the sand, till sunrise—`
             this.requestId = 0;
             this.fadeSeconds = 0.45;
             this.muted = false;
-            this.masterLevel = 0.8;
+            this.masterBase = 0.8;
+            this.masterLevel = this.masterBase;
+            this.minNervousGain = 0.06;
+            this.nervousCurve = 1.7;
 
             const ctx = this.ctx;
 
@@ -480,45 +483,32 @@ so dance with me in circles on the sand, till sunrise—`
         updateNervousness(n, features) {
             const ctx = this.ctx;
             const now = ctx.currentTime;
-            const intensity = Math.max(0, Math.min(1, n));
-            const closeness = 1 - intensity;
 
-            // Master loudness: noticeably louder and more present when overwhelmed
-            const targetMaster = 0.45 + intensity * 0.85; // 0.45..1.30
-            this.masterLevel = targetMaster;
-            const destLevel = this.muted ? 0 : this.masterLevel;
+            // Defensive clamp (handles undefined/NaN too)
+            const x = Number.isFinite(n) ? n : 0;
+            const intensity = Math.max(0, Math.min(1, x)); // 0..1
+
+            // Map nervousness -> gain multiplier (never hits 0)
+            // nervousness=0  => minNervousGain
+            // nervousness=1  => 1.0
+            const curved = Math.pow(intensity, this.nervousCurve);
+            const nervousGain = this.minNervousGain + curved * (1 - this.minNervousGain);
+
+            // Effective master level
+            this.masterLevel = this.masterBase * nervousGain;
+
+            // Smooth updates to avoid zipper/choppiness
+            const dest = this.muted ? 0 : this.masterLevel;
             this.masterGain.gain.cancelScheduledValues(now);
-            this.masterGain.gain.setTargetAtTime(destLevel, now, 0.35);
+            this.masterGain.gain.setTargetAtTime(dest, now, 0.08); // tweak: 0.04..0.15
 
-            // Reverb: heavier, smeared room when nervous
-            const targetReverb = 0.25 + intensity * 1.0; // 0.25..1.25
-            this.reverbGain.gain.cancelScheduledValues(now);
-            this.reverbGain.gain.setTargetAtTime(targetReverb, now, 0.8);
-
-            // Tone: darker and more claustrophobic when overwhelmed
-            const baseFreq = 900 + closeness * 2600; // 900..3500
-            const tilt = intensity > 0.8 ? -400 : 0;
-            const targetFreq = Math.max(450, baseFreq + tilt);
-            this.toneFilter.frequency.cancelScheduledValues(now);
-            this.toneFilter.frequency.setTargetAtTime(targetFreq, now, 0.9);
-
-            // Playback-rate warping: obvious warble at higher nervousness
-            const envNorm =
-                (features && typeof features.envelopeNorm === 'number') ? features.envelopeNorm : 0;
-            const wobbleBase = 0.6 + intensity * 0.8;
-            const t = ctx.currentTime;
-
+            // IMPORTANT: stop the old "choppy distortion" behavior
+            // If any playbackRate got changed previously, force it back to normal.
             this.tracks.forEach(track => {
-                const baseRate = 1 + (intensity - 0.5) * 0.8; // around 1, stretches with intensity
-                const phase = t * wobbleBase + (track.id === this.currentId ? 0 : 1.3);
-                const jitterAmount = 0.15 + 0.35 * intensity;
-                const jitter = Math.sin(phase) * jitterAmount;
-                const rate = Math.min(
-                    1.7,
-                    Math.max(0.6, baseRate + jitter + envNorm * 0.25 * intensity)
-                );
-                track.el.playbackRate = rate;
+                if (track.el.playbackRate !== 1) track.el.playbackRate = 1;
             });
+
+            // Leave reverb + tone filter alone (they stay constant as set in constructor).
         }
 
         toggleMute() {
