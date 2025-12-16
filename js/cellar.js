@@ -628,13 +628,28 @@
     /* ---------- intro & HUD (fallback) ---------- */
     const enter = $('#enter');
 
-    $('#enterBtn').addEventListener('click', async () => {
+    async function enterAsOseana() {
+        // prevent double-entry from different paths
+        if (VC.entered) return;
+        VC.entered = true;
+
         enter.style.display = 'none';
         player.volume = 0;
+
+        // Flip mapping immediately so inversion feels instant after click
+        VC.nx = 1 - VC.rx;
+        VC.ny = 1 - VC.ry;
+        renderFromVirtual();
+
         stigma.start();
         stigma.spawn({ anchor: 'edge' });
+        stigma.spawn({ anchor: 'top' });
+
         await playTrack('theme');
-    }, { once: true });
+    }
+
+    $('#enterBtn').addEventListener('click', enterAsOseana, { once: true });
+
 
     $('#mute').addEventListener('click', () => {
         player.muted = !player.muted;
@@ -726,11 +741,13 @@
         VC.rx = clamp01(x);
         VC.ry = clamp01(y);
 
-        VC.nx = 1 - VC.rx;
-        VC.ny = 1 - VC.ry;
+        const invert = VC.entered; // only invert AFTER entering
+        VC.nx = invert ? (1 - VC.rx) : VC.rx;
+        VC.ny = invert ? (1 - VC.ry) : VC.ry;
 
         VC.lastMoveAt = performance.now();
     }
+
 
     let hoverInT = null;
     let hoverOutT = null;
@@ -830,17 +847,7 @@
         }
 
         if (btn.id === 'enterBtn') {
-            if (VC.entered) return;
-            VC.entered = true;
-
-            $('#enter').style.display = 'none';
-            player.volume = 0;
-
-            stigma.start();
-            stigma.spawn({ anchor: 'edge' });
-            stigma.spawn({ anchor: 'top' });
-
-            playTrack('theme');
+            enterAsOseana();
             return;
         }
     }
@@ -895,10 +902,14 @@
     inputLayer.addEventListener('wheel', e => {
         updateRect();
 
-        const x = (e.clientX - sceneRect.left) / sceneRect.width;
-        const y = (e.clientY - sceneRect.top) / sceneRect.height;
-        const nx = clamp01(1 - clamp01(x) + VC.glitchX);
-        const ny = clamp01(1 - clamp01(y) + VC.glitchY);
+        const x = clamp01((e.clientX - sceneRect.left) / sceneRect.width);
+        const y = clamp01((e.clientY - sceneRect.top) / sceneRect.height);
+
+        const baseNx = VC.entered ? (1 - x) : x;
+        const baseNy = VC.entered ? (1 - y) : y;
+
+        const nx = clamp01(baseNx + VC.glitchX);
+        const ny = clamp01(baseNy + VC.glitchY);
 
         const vClientX = sceneRect.left + nx * sceneRect.width;
         const vClientY = sceneRect.top + ny * sceneRect.height;
