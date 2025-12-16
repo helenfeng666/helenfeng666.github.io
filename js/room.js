@@ -534,7 +534,7 @@ so dance with me in circles on the sand, till sunrise—`
             this.analyser = null;
             this.data = null;
             this.history = [];
-            this.windowSec = 12;
+            this.windowSec = 10;
             this.envelope = 0;
             this.nervousness = 0.35;
             this.lastFeatures = {

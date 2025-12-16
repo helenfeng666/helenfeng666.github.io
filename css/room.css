@@ -564,17 +564,50 @@ button.icon {
     align-items: center;
     justify-content: center;
     min-width: 36px;
+    position: relative;
 }
 
 button.icon:hover {
     background: rgba(255, 255, 255, .08);
 }
 
+#listen.icon {
+    position: fixed;
+    left: 50%;
+    top: calc(env(safe-area-inset-top, 0px) + 14px);
+    transform: translateX(-50%);
+
+    padding: 14px 18px;
+    min-width: 64px;
+    min-height: 64px;
+    font-size: 30px;
+    line-height: 1;
+
+    border-width: 1.5px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, .45);
+}
+
+#listen.icon::before {
+    content: "MIC";
+    position: absolute;
+    left: 50%;
+    top: 100%;
+    transform: translate(-50%, 8px);
+    font-size: 11px;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    opacity: .75;
+    pointer-events: none;
+}
+
 /* Mic button states */
 #listen.on {
     border-color: rgba(180, 223, 255, .9);
-    box-shadow: 0 0 12px rgba(134, 199, 255, .85);
     background: rgba(255, 255, 255, .12);
+
+    box-shadow:
+        0 12px 40px rgba(0, 0, 0, .45),
+        0 0 12px rgba(134, 199, 255, .85);
 }
 
 #listen.disabled {
@@ -714,5 +747,13 @@ button.icon:hover {
 
     #nervousHud {
         max-width: 210px;
+    }
+
+    #listen.icon {
+        top: calc(env(safe-area-inset-top, 0px) + 10px);
+        min-width: 56px;
+        min-height: 56px;
+        font-size: 26px;
+        padding: 12px 16px;
     }
 }
